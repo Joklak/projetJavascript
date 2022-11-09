@@ -1,17 +1,124 @@
 
 const urlsite = new URL(location.href)
 const id = urlsite.searchParams.get("id");
+const addPanier = document.getElementById("addToCart");
+
+produitSeul();
 
 
-async function fetchProducts() {
-    const url = "http://localhost:3000/api/products";
+addPanier.addEventListener("click" , () => {
+    const qty = document.getElementById("quantity").value;
+    const color = document.getElementById("colors").value;
+    
+
+    if (qty <= 0 || qty > 100) {
+        alert('Merci de choisir une quantité entre 1 et 100')
+        return;
+    }
+    if (color === '') {
+        alert('Merci de choisir une couleur')
+        return;
+    }
+
+    const products = [
+        {
+        id: id,
+        color: color,
+        qty :qty }
+    ];
+
+   function saveBasket(basket) {
+    localStorage.setItem("basket", JSON.stringify(products));    
+   }
+
+    function getBasket() {
+        let basket = localStorage.getItem("basket");
+        if (basket == null) {
+            return [];
+
+        } else {
+            return JSON.parse("basket")
+        }
+    };
+
+    function addBasket(product) {
+        let  basket = getBasket();
+        let foundProduct = basket.find(p => p.id == product.id);
+        if (foundProduct != undefined ) {
+            foundProduct.qty++;
+        }else {
+            product.qty =1;
+            basket.push(product)
+        }
+        saveBasket(basket);        
+
+    }
+
+
+    
+
+   // function savePanier() {
+ //       localStorage.setItem("panier",JSON.stringify(productstest));  
+     //   reCalculate();       
+    //}
+
+/*     function reCalculate () {
+        if ("panier" == null ) {
+            console.log("c'est vide")
+        } else {
+            console.log("c'est pleins");
+        }
+    }
+    function savePanier(){
+        let products = [];
+        if(localStorage.getItem('panier')){
+            products = JSON.parse(localStorage.getItem('panier'));
+        }
+        products.push({'productId' : id, 'quantity' : qty});
+        localStorage.setItem('products', JSON.stringify(products));
+    }
+
+
+
+
+
+
+
+
+    savePanier();
+JSON.parse(localStorage.getItem("panier"))
+    function getPanier() {
+        let panier = (localStorage.getItem("panier"));
+        if(panier == null) {
+            return [];
+        } else {
+            return JSON.parse(panier);
+        }
+    }
+    
+    function addPanier(productstest) {
+        let panier = getPanier();
+        let foundProducts = panier.find( p => p.id ==productstest.id);
+        if(foundProducts != undefined ) {
+            foundProducts.quantity++;
+    
+        }else {
+            product.quantity =1;
+            panier.push(product);
+        }    
+        savePanier(panier);
+    }  */
+})
+
+
+
+
+
+async function fetchProduct() {
+    const url = "http://localhost:3000/api/products/" +id;
 
     try {
-        const response = await fetch(url);
-        console.log(typeof response);
-        console.log(response.status);
-        console.log(response.ok);
-        console.log("ca marche");
+        const response = await fetch(url);        
         return await response.json();
         
     } catch (error) {
@@ -21,78 +128,29 @@ async function fetchProducts() {
 
 
  async function produitSeul()  {
-    const products = await fetchProducts();
-    console.log(products);
-     let html2 ="";
-     products.forEach((element) => {     
-
-         let productImg = document.querySelector(".item__img");
-         if (id=== element._id) {
- 
-            productImg.innerHTML = `<img src="${element.imageUrl}"alt="${element.altTxt}">
-        ` ; }
-          else {
-             console.log("pasbonneid")
-          }
-
+    const element = await fetchProduct();    
+     let html ="";    
+     let productImg = document.querySelector(".item__img");
+     let productTitle = document.getElementById("title"); 
+     let productPrice = document.getElementById("price");
+     let productDescription = document.getElementById("description");
+     let productColors = document.getElementById("colors");
       
-         let productTitle = document.getElementById("title");
-         if (id=== element._id) {
- 
-            productTitle.innerHTML = `${element.name}`; }
-          else {
-             console.log("pasbonneid")
-          }
+      element.colors.forEach(color => {
+            const option = document.createElement('option')
+            option.value = color
+            option.innerText=color            
+            productColors.appendChild(option)
+        })
 
-          
-        let productPrice = document.getElementById("price");
-        if (id=== element._id) {
+    
 
-            productPrice.innerHTML = `${element.price}`; }
-         else {
-            console.log("pasbonneid")
-         }
-
-         let productDescription = document.getElementById("description");
-         if (id=== element._id) {
- 
-            productDescription.innerHTML = `${element.description}`; }
-          else {
-             console.log("pasbonneid")
-          }
-          let productColors = document.getElementById("colors");
-          if (id=== element._id) {
-  
-            productColors.innerHTML = `<option value="${element.colors[1]}">${element.colors[1]}</option>
-            <option value="${element.colors[0]}">${element.colors[0]}</option> <option value="${element.colors[2]}">${element.colors[2]}</option>`; }
-           else {
-              console.log("pasbonneid")
-           }
-          
-
-     });     
+     productImg.innerHTML = `<img src="${element.imageUrl}"alt="${element.altTxt}"> ` ; 
+     productTitle.innerHTML = `${element.name}`; 
+     productPrice.innerHTML = `${element.price}`;     
+     productDescription.innerHTML = `${element.description}`; 
      
  }
 
- produitSeul();
-
-function panierQuantity() {
-    let quantite = document.getElementById("quantity");
-    return quantite.value;
-    console.log (quantite);
-}
-function colorChoice() {
-    let colorchoix = document.getElementById("colors");
-    return colorchoix.value;
-    console.log(colorchoix);
-}
-
-const addPanier = document.getElementById("addToCart");
-addPanier.addEventListener("click" , () => {
-    let quantite = panierQuantity();
-    let colorchoix = colorChoice ();
-    console.log(quantite);
-    console.log(colorchoix);
-})
 
 
