@@ -8,7 +8,8 @@ produitSeul();
 
 addPanier.addEventListener("click" , () => {
     const qty = document.getElementById("quantity").value;
-    const color = document.getElementById("colors").value;
+    const color = document.getElementById("colors").value
+    const price = document.getElementById("price").value;
     
 
     if (qty <= 0 || qty > 100) {
@@ -24,94 +25,45 @@ addPanier.addEventListener("click" , () => {
         {
         id: id,
         color: color,
-        qty :qty }
-    ];
-
-   function saveBasket(basket) {
-    localStorage.setItem("basket", JSON.stringify(products));    
-   }
-
-    function getBasket() {
-        let basket = localStorage.getItem("basket");
-        if (basket == null) {
-            return [];
-
-        } else {
-            return JSON.parse("basket")
-        }
-    };
-
-    function addBasket(product) {
-        let  basket = getBasket();
-        let foundProduct = basket.find(p => p.id == product.id);
-        if (foundProduct != undefined ) {
-            foundProduct.qty++;
-        }else {
-            product.qty =1;
-            basket.push(product)
-        }
-        saveBasket(basket);        
-
-    }
-
-
-    
-
-   // function savePanier() {
- //       localStorage.setItem("panier",JSON.stringify(productstest));  
-     //   reCalculate();       
-    //}
-
-/*     function reCalculate () {
-        if ("panier" == null ) {
-            console.log("c'est vide")
-        } else {
-            console.log("c'est pleins");
-        }
-    }
-    function savePanier(){
-        let products = [];
-        if(localStorage.getItem('panier')){
-            products = JSON.parse(localStorage.getItem('panier'));
-        }
-        products.push({'productId' : id, 'quantity' : qty});
-        localStorage.setItem('products', JSON.stringify(products));
-    }
-
-
-
-
-
-
-
-
-    savePanier();
-JSON.parse(localStorage.getItem("panier"))
-    function getPanier() {
-        let panier = (localStorage.getItem("panier"));
-        if(panier == null) {
-            return [];
-        } else {
-            return JSON.parse(panier);
-        }
-    }
-    
-    function addPanier(productstest) {
-        let panier = getPanier();
-        let foundProducts = panier.find( p => p.id ==productstest.id);
-        if(foundProducts != undefined ) {
-            foundProducts.quantity++;
-    
-        }else {
-            product.quantity =1;
-            panier.push(product);
-        }    
-        savePanier(panier);
-    }  */
+        qty :qty,
+        price: price}
+    ];   
+    async function saveBasket(basket) {
+        localStorage.setItem("basket", JSON.stringify(products));   
+        console.log("marche") ;
+       }    
+    addBasket();
 })
 
+async function getBasket() {
+    let basket =JSON.parse(localStorage.getItem("basket"));
+    console.log("TESTBASKET");
+    console.log(basket);
+    if (basket == null) {
+        console.log("c'est vide");
+        return [];
+        
+
+    } else {
+        console.log("je renvoie les données");
+        return JSON.parse(localStorage.getItem("basket"));            
+    }
+};  
 
 
+async function addBasket(product) {
+    let  basket = getBasket();
+    console.log(basket );
+    let foundProduct = 10;
+    if (foundProduct != undefined ) {
+        foundProduct.qty++;
+    }else {
+        product.qty += qty;
+        basket.push(product)
+    }
+    saveBasket(basket);      
+
+};
 
 
 async function fetchProduct() {
@@ -135,15 +87,15 @@ async function fetchProduct() {
      let productPrice = document.getElementById("price");
      let productDescription = document.getElementById("description");
      let productColors = document.getElementById("colors");
+     
+     
       
       element.colors.forEach(color => {
             const option = document.createElement('option')
             option.value = color
             option.innerText=color            
             productColors.appendChild(option)
-        })
-
-    
+        })    
 
      productImg.innerHTML = `<img src="${element.imageUrl}"alt="${element.altTxt}"> ` ; 
      productTitle.innerHTML = `${element.name}`; 
