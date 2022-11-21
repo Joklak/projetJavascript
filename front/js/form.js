@@ -56,8 +56,8 @@ form.addEventListener("submit", (e) => {
 
 // redirection vers la page confirmation 
 
-button.addEventListener("click", () => {
-    if (isFormOk = true) {
+/* button.addEventListener("click", () => {
+    if (isFormOk =true) {
         console.log("redirection)")
         notifyAndRedirect('Merci pour votre commande', "confirmation.html");
     }
@@ -66,7 +66,7 @@ button.addEventListener("click", () => {
         return;
     }
 
-});
+}); */
 
 /* 
 function formOk() {
