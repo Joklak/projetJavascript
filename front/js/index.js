@@ -1,20 +1,7 @@
-async function fetchProducts() {
-    const url = "http://localhost:3000/api/products";
+import { fetchProducts} from './tools.js'
 
-    try {
-        const response = await fetch(url);
-        console.log(typeof response);
-        console.log(response.status);
-        console.log(response.ok);
-        return await response.json();
-        
-    } catch (error) {
-        console.log(error);        
-    }
-}
- 
 
-async function renderProducts() {
+
     const products = await fetchProducts();
     let html = "";
     products.forEach((element) => {
@@ -31,6 +18,5 @@ async function renderProducts() {
     });
     document.getElementById("items").innerHTML = html;
 
-}
 
-renderProducts();
+
