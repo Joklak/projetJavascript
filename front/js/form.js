@@ -1,83 +1,61 @@
-
-import { notifyAndRedirect } from './tools.js';
+import { get,  } from './tools.js';
 const form = document.getElementById('formulaire');
-const firstName = document.getElementById('firstName');
-const lastName = document.getElementById('lastName');
-const address = document.getElementById('address');
-const city = document.getElementById('city');
-const email = document.getElementById('email');
-const button = document.getElementById('order')
-let isFormOk = false
-let nom = "";
-let prenom = "";
-let adresse = "";
-let ville = "";
-let mail = ""
+const firstNameEl = document.getElementById('firstName');
+const lastNameEl = document.getElementById('lastName');
+const addressEl = document.getElementById('address');
+const cityEl = document.getElementById('city');
+const emailEl = document.getElementById('email');
 
 
-form.addEventListener("submit", (e) => {
+
+form.addEventListener("submit", async  (e) => {
     e.preventDefault();
-    localStorage.setItem("firstname", firstName.value);
-    localStorage.setItem("lastName", lastName.value);
-    localStorage.setItem("address", address.value);
-    localStorage.setItem("city", city.value);
-    localStorage.setItem("email", email.value);
-
-    const formulaire = {
-        firstname: localStorage.getItem("firstname"),
-        lastName: localStorage.getItem("lastName"),
-        address: localStorage.getItem("address"),
-        city: localStorage.getItem("city"),
-        email: localStorage.getItem("email"),
+    hideError(firstNameEl);
+    if (!isFirstNameValid()) {
+        showError(firstNameEl, 'Le prenom nest pas valide')
+        return;
     }
-
-    isFormOk = true;
-
-
+    console.log("ca marche");
 
     // envoie vers le serveurs
 
-    /*     const sendServer = {
-            basket,
-            formulaire,
-    
-        }
-        const serverRecup = fetch("http://localhost:3000/api/products", {
-            method: "POST",
-            body: JSON.stringify(sendServer),
-        }) */
+    const payload = {
+        contact: {
+            'firstName': 'test',
+            'lastName': 'test',
+            'address': 'test',
+            'city': 'test',
+            'email': 'test@gmail.com'
+        },
+        products: get('products').map(a => a.id),
 
+    }
+    const res = await fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers : {"Content-type" :"application/json"},
+    }).then (a=> a.json())
+console.log(res);
 
 })
 
-//  evite de recharger la page 
+function isFirstNameValid() {
+    const firstName = firstNameEl.value;
 
-
-
-// redirection vers la page confirmation 
-
-/* button.addEventListener("click", () => {
-    if (isFormOk =true) {
-        console.log("redirection)")
-        notifyAndRedirect('Merci pour votre commande', "confirmation.html");
+    if (firstName.trim(' ').lenght < 3) {
+        return false
     }
-    else {
-        alert('Merci de remplir le formulaire')
-        return;
-    }
+    return true
+}
 
-}); */
 
-/* 
-function formOk() {
-    if (document.getElementById("firstName").required = true,
-        document.getElementById("lastName").required = true,
-        document.getElementById("address").required = true,
-        document.getElementById("city").required = true,
-        document.getElementById("email").required = true) {
-        isFormOk = true;
-        console.log("formulaire ok")
-    } else {
-        isFormOk = false;
-    }
-} */
+
+
+function hideError(el) {
+    el.nextElementSibling.innerText = ''
+}
+
+
+function showError(el, msg) {
+    el.nextElementSibling.innerText = msg
+}
