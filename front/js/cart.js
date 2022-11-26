@@ -5,45 +5,43 @@ let totalQty = 0;
 
 
 if (!has('products')) {
-  showEmptyBasket();
-} else {  
-  const products = await buildCompleteList();
-  displayProducts(products);
-  displayTotal(products);
-  listenForQtyUpdate(products);
-  listenForDeletion(products);
+    showEmptyBasket();
+} else {
+    const products = await buildCompleteList();
+    displayProducts(products);
+    displayTotal(products);
+    listenForQtyUpdate(products);
+    listenForDeletion(products);
 
 }
 
 // changer quantité d'un élement 
 function listenForQtyUpdate(products) {
-  products.forEach((product) => {
-   const input = document.querySelector(`article[data-id="${product._id}"][data-color="${product.color}"] .itemQuantity`)
-   input.addEventListener('input' , (e) => {
-      const qty = e.target.value;
-      const cart = get('products');     
-      const item = cart.find(a => a.id == product._id && a.color == product.color)
-      item.qty = Number(qty);
-      store('products' , cart )
-      location.reload();
-   })
-  });
+    products.forEach((product) => {
+        const input = document.querySelector(`article[data-id="${product._id}"][data-color="${product.color}"] .itemQuantity`)
+        input.addEventListener('input', (e) => {
+            const qty = e.target.value;
+            const cart = get('products');
+            const item = cart.find(a => a.id == product._id && a.color == product.color)
+            item.qty = Number(qty);
+            store('products', cart)
+            location.reload();
+        })
+    });
 
 }
 // supprimer un element 
 function listenForDeletion(products) {
-  products.forEach((product) => {
-   const input = document.querySelector(`article[data-id="${product._id}"][data-color="${product.color}"] .deleteItem`)
-   input.addEventListener('click' , (e) => {      
-      const cart = get('products');     
-      console.log(cart, "cart");
-      const index = cart.findIndex(a => a.id == product._id && a.color == product.color);
-      console.log(index, "index");
-      cart.slice(index ,1);     
-      store('products' , cart );
-      location.reload();
-   })
-  });
+    products.forEach((product) => {
+        const input = document.querySelector(`article[data-id="${product._id}"][data-color="${product.color}"] .deleteItem`)
+        input.addEventListener('click', (e) => {
+            const cart = get('products');
+            const index = cart.findIndex(a => a.id == product._id && a.color == product.color);
+            cart.splice(index, 1);
+            store('products', cart);
+            location.reload();
+        })
+    });
 
 }
 
@@ -51,34 +49,36 @@ function listenForDeletion(products) {
 
 // Le panier est vide 
 function showEmptyBasket() {
-  document.querySelector('.cart').style.display = 'none'
-  document.querySelector('h1').innerText = `Votre panier est vide`
+    document.querySelector('.cart').style.display = 'none'
+    document.querySelector('h1').innerText = `Votre panier est vide`
 }
 
 
 //liste des produits
 
 async function buildCompleteList() {
-  const cart = get('products')
-  const all = await fetchProducts();
-  const list = [];
-  cart.forEach(item => {
-    const findNeedProduct = all.find(p => p._id == item.id)
-    const product = { ...findNeedProduct } ;
-    product.qty = item.qty;
-    product.color = item.color;
-    list.push(product)
+    const cart = get('products')
+    const all = await fetchProducts();
+    const list = [];
+    cart.forEach(item => {
+        const findNeedProduct = all.find(p => p._id == item.id)
+        const product = {
+            ...findNeedProduct
+        };
+        product.qty = item.qty;
+        product.color = item.color;
+        list.push(product)
 
 
-  });
-  return list;
+    });
+    return list;
 }
 
 
-
+// afficher produit dans le panier 
 function displayProducts(products) {
-  products.forEach((element) => {
-    document.getElementById("cart__items").innerHTML += ` <article class="cart__item" data-id="${element._id}" data-color="${element.color}">
+    products.forEach((element) => {
+        document.getElementById("cart__items").innerHTML += ` <article class="cart__item" data-id="${element._id}" data-color="${element.color}">
         <div class="cart__item__img">
           <img src="${element.imageUrl}" alt="${element.altTxt}">
         </div>
@@ -100,21 +100,21 @@ function displayProducts(products) {
           </div>
         </div>
       </article>`;
-  
-  
-  })
+
+
+    })
 }
 
-
+// total du prix et de la quantité 
 function displayTotal(products) {
-  products.forEach((element) => {
+    products.forEach((element) => {
 
-    totalPrice += element.price * element.qty;    
-    document.getElementById("totalPrice").innerHTML = totalPrice;
-    
-    totalQty += [1] * element.qty;    
-    document.getElementById("totalQuantity").innerHTML = totalQty;
-  })
+        totalPrice += element.price * element.qty;
+        document.getElementById("totalPrice").innerHTML = totalPrice;
 
-  
+        totalQty += [1] * element.qty;
+        document.getElementById("totalQuantity").innerHTML = totalQty;
+    })
+
+
 }

@@ -1,4 +1,4 @@
-import { get, has, store, notifyAndRedirect } from './tools.js'
+import { get, has, store, notifyAndRedirect } from './tools.js';
 const id = getId();
 const product = await fetchProduct(id);
 
@@ -26,13 +26,11 @@ function listen(product) {
         // Le panier est vide
 
         if (!has("products")) {
-            products.push(
-                {
-                    id: product._id,
-                    color: color,
-                    qty: qty,
-                }
-            )
+            products.push({
+                id: product._id,
+                color: color,
+                qty: qty,
+            })
 
             store("products", products);
             notifyAndRedirect('Votre produit est bien ajouté , redirection vers la page d acceuil', "index.html");
@@ -42,21 +40,18 @@ function listen(product) {
         // le panier contient deja des produits 
         // produit déjà existant 
         products = get("products");
-        const productExists = products.find(a => a.id == product._id && a.color == color)
-        console.log('le produit existe', productExists)
+        const productExists = products.find(a => a.id == product._id && a.color == color)        
 
         // le produit avec cette couleur existe deja
 
         if (productExists) {
             productExists.qty = Number(productExists.qty) + Number(qty);
         } else {
-            products.push(
-                {
-                    id: product._id,
-                    color: color,
-                    qty: qty,
-                }
-            )
+            products.push({
+                id: product._id,
+                color: color,
+                qty: qty,
+            })
 
         }
 
@@ -66,7 +61,7 @@ function listen(product) {
     })
 }
 
-
+// call api
 async function fetchProduct(id) {
     const url = "http://localhost:3000/api/products/" + id;
 
@@ -79,7 +74,7 @@ async function fetchProduct(id) {
     }
 }
 
-
+// afficher les informations produits 
 async function display(product) {
 
     let html = "";
@@ -106,7 +101,7 @@ async function display(product) {
 }
 
 
-
+// id du produit dans l'url 
 function getId() {
     const urlsite = new URL(location.href)
     return urlsite.searchParams.get("id");
